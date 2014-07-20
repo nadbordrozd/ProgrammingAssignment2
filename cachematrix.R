@@ -1,15 +1,33 @@
-## Put comments here that give an overall description of what your
-## functions do
+## these functions demonstrate caching of function results using wrapper objects
 
-## Write a short comment describing this function
+## wraps a matrix for use with cacheSolve
 
 makeCacheMatrix <- function(x = matrix()) {
-
+  i <- NULL
+  set <- function(y) {
+    x <<- y
+    i <<- NULL
+  }
+  get <- function() x
+  setinv <- function(inv) i <<- inv
+  getinv <- function() i
+  list(set = set, get = get,
+       setinv = setinv,
+       getinv = getinv)
 }
 
 
-## Write a short comment describing this function
+## acts the same way as "solve" function but caches the result and only works on matrices wrapped with makeCacheMatrix
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+  i <- x$getinv()
+  print(i)
+  if(!is.null(i)) {
+    message("getting cached data")
+    return(i)
+  }
+  mat <- x$get()
+  i <- solve(mat)
+  x$setinv(i)
+  i
 }
